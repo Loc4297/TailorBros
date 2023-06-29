@@ -76,7 +76,7 @@ export class AuthService {
     }
     return await this.signJwtToken(user.id, user.phoneNumber);
   }
-  // (...)
+
   async signJwtToken(
     userId: number,
     phoneNumber: string,
