@@ -20,10 +20,10 @@ export class OrderService {
           items: {
             createMany: {
               data: items.map((value) => {
-                const { itemInfor, quantity, type } = value;
-                const infor: any = itemInfor;
+                const { itemInformation, quantity, type } = value;
+                const information: any = itemInformation;
                 return {
-                  itemInfor: infor,
+                  itemInformation: information,
                   quantity,
                   type,
                 };

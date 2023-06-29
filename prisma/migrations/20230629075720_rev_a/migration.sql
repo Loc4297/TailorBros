@@ -45,7 +45,7 @@ CREATE TABLE "Item" (
     "id" SERIAL NOT NULL,
     "orderId" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 0,
-    "itemInfor" JSONB NOT NULL,
+    "itemInformation" JSONB NOT NULL,
     "type" "ItemType" NOT NULL DEFAULT 'SUIT',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

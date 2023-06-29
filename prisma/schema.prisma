@@ -36,14 +36,14 @@ model Order {
 }
 
 model Item {
-  id        Int      @id @default(autoincrement())
-  orderId   Int
-  quantity  Int      @default(0)
-  itemInfor Json
-  type      ItemType @default(SUIT)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  order     Order    @relation(fields: [orderId], references: [id])
+  id              Int      @id @default(autoincrement())
+  orderId         Int
+  quantity        Int      @default(0)
+  itemInformation Json
+  type            ItemType @default(SUIT)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  order           Order    @relation(fields: [orderId], references: [id])
 }
 
 enum Chest {
