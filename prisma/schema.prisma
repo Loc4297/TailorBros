@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  name        String
+  phoneNumber String   @unique
+  password    String
+  role        Role?    @default(CLIENT)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Order       Order[]
+
+  @@map("users")
+}
+
+model Order {
+  id            Int           @id @default(autoincrement())
+  userId        Int
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deadline      DateTime
+  note          String
+  orderStatus   OrderStatus   @default(DRAFT)
+  paymentStatus PaymentStatus @default(PENDING)
+  items         Item[]
+  user          User          @relation(fields: [userId], references: [id])
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  quantity  Int      @default(0)
+  itemInfor Json
+  type      ItemType @default(SUIT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id])
+}
+
+enum Chest {
+  T
+  S
+}
+
+enum Role {
+  CLIENT
+  TAILOR
+  ADMIN
+}
+
+enum OrderStatus {
+  DRAFT
+  IN_PROCESSING
+  COMPELETED
+  DELIVERED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAY
+}
+
+enum ItemType {
+  SUIT
+  SHIRT
+  TROUSER
+}
