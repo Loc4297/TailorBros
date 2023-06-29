@@ -11,17 +11,18 @@ import { RoleUser } from '../auth/dto/auth.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(RoleUser.TAILOR)
-  @Get()
-  getAllUsers() {
-    return this.userService.getAllUsers();
-  }
+  //   @ApiBearerAuth()
+  //   @UseGuards(JwtAuthGuard, RolesGuard)
+  //   @Roles(RoleUser.TAILOR)
+  //   @Get()
+  //   getAllUsers() {
+  //     return this.userService.getAllUsers();
+  //   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(RoleUser.CLIENT)
+  @UseGuards(JwtAuthGuard)
+  //   @UseGuards(JwtAuthGuard, RolesGuard)
+  //   @Roles(RoleUser.CLIENT)
   @Get('me')
   getDetailUser(@Req() request) {
     return request.user;
