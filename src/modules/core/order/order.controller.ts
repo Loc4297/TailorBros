@@ -1,14 +1,26 @@
-import { Body, Controller, Post, Param } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Post,
+  Query,
+  UseGuards,
+  Get,
+  Req,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { OrderService } from './order.service';
-import { CreateOrderDTO } from './dto/order.dto';
+import { CreateOrderDTO, ItemDTO } from './dto/order.dto';
+import JwtAuthGuard from '../auth/guard/jwt-auth.guard';
+import { RolesGuard } from '../auth/guard/role.guard';
+import { Roles } from 'src/modules/shared/decorators/role.decorator';
+import { RoleUser } from '../auth/dto/auth.dto';
 
-@Controller('')
+@Controller('order')
 @ApiTags('Order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Post('users/:userId/orders')
+  @Post('create-orders')
   @ApiBody({
     type: CreateOrderDTO,
     examples: {
@@ -90,10 +102,41 @@ export class OrderController {
       },
     },
   })
+  @ApiQuery({
+    required: true,
+    name: 'userId',
+    explode: true,
+    example: null,
+  })
   async createOrder(
     @Body() createOrder: CreateOrderDTO,
-    @Param('userId') userId: string,
+    @Query('userId') userId: string,
   ) {
     return await this.orderService.createOrder(createOrder, userId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleUser.TAILOR)
+  @ApiQuery({
+    required: false,
+    name: 'phoneNumber',
+    explode: true,
+    example: null,
+  })
+  @Get()
+  async getAllOrders(@Query() query) {
+    console.log(query);
+    const data_1 = await JSON.stringify(query);
+    const data_2 = await JSON.parse(data_1);
+    return this.orderService.getAllOrders(data_2.phoneNumber);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  getDetailOrder(@Req() request) {
+    // console.log(request.user.id);
+    return this.orderService.getDetailOrder(request.user.id);
   }
 }

@@ -7,7 +7,7 @@ import { Roles } from 'src/modules/shared/decorators/role.decorator';
 import { RoleUser } from '../auth/dto/auth.dto';
 
 @Controller('user')
-@ApiTags('users')
+@ApiTags('Users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

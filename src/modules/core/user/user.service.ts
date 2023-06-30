@@ -9,9 +9,9 @@ export class UserService {
     const allUsers = await this.prismaService.user.findMany();
     // console.log(allUsers.length);
     const paginateUser = [];
-    for (let i = 0; i < allUsers.length; i += 2) {
+    for (let i = 0; i < allUsers.length; i += 5) {
       const a = i;
-      const b = 2;
+      const b = 5;
       const paginate = await this.prismaService.user.findMany({
         skip: a,
         take: b,
@@ -26,17 +26,17 @@ export class UserService {
     return paginateUser;
   }
 
-  public async getDetailUser(id: number) {
-    try {
-      const foundUser = await this.prismaService.user.findUnique({
-        where: { id },
-      });
-      if (!foundUser) {
-        throw new NotFoundException();
-      }
-      return foundUser;
-    } catch (error) {
-      throw error;
-    }
-  }
+  // public async getDetailUser(id: number) {
+  //   try {
+  //     const foundUser = await this.prismaService.user.findUnique({
+  //       where: { id },
+  //     });
+  //     if (!foundUser) {
+  //       throw new NotFoundException();
+  //     }
+  //     return foundUser;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }

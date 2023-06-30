@@ -7,7 +7,7 @@ import { RolesGuard } from './guard/role.guard';
 import { Roles } from 'src/modules/shared/decorators/role.decorator';
 
 @Controller('auth')
-@ApiTags('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
