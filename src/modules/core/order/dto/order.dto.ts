@@ -3,7 +3,7 @@ import { ItemType } from '@prisma/client';
 import { SuitInformation, TrouserInformation } from '../models/order.model';
 
 export class CreateOrderDTO {
-  @IsOptional()
+  @IsNotEmpty()
   items: ItemDTO[];
 
   @IsOptional()

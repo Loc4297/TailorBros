@@ -5,7 +5,7 @@ import {
   Length,
 } from '@nestjs/class-validator';
 import { Role } from '@prisma/client';
-import { IsNumber, IsPhoneNumber } from 'class-validator';
+import { IsPhoneNumber } from 'class-validator';
 
 export enum RoleUser {
   CLIENT = 'CLIENT',

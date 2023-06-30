@@ -7,7 +7,23 @@ export class UserService {
 
   public async getAllUsers() {
     const allUsers = await this.prismaService.user.findMany();
-    return allUsers;
+    // console.log(allUsers.length);
+    const paginateUser = [];
+    for (let i = 0; i < allUsers.length; i += 2) {
+      const a = i;
+      const b = 2;
+      const paginate = await this.prismaService.user.findMany({
+        skip: a,
+        take: b,
+        where: {
+          role: 'CLIENT',
+        },
+      });
+      console.log(paginate);
+      paginateUser.push(paginate);
+      // return paginateUser;
+    }
+    return paginateUser;
   }
 
   public async getDetailUser(id: number) {
