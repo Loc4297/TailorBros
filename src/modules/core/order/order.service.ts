@@ -83,4 +83,14 @@ export class OrderService {
       throw error;
     }
   }
+
+  async updateOrderStatus() {
+    try {
+    } catch (error) {}
+  }
+
+  async updatePaymentStatus() {
+    try {
+    } catch (error) {}
+  }
 }

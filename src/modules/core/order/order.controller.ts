@@ -100,6 +100,42 @@ export class OrderController {
           ],
         },
       },
+      trouser_shirt: {
+        value: {
+          note: 'As soon as possible',
+          deadline: '2023-09-27 09:12:46.255',
+          items: [
+            {
+              quantity: 4,
+              type: 'TROUSER',
+              itemInformation: {
+                belly: 12,
+                femoral: 1,
+                pipe: 1,
+                bottom: 2,
+                butt: 2,
+                knee: 2,
+                longTrouser: 2,
+                calfLeg: 2,
+              },
+            },
+            {
+              quantity: 4,
+              type: 'TROUSER',
+              itemInformation: {
+                belly: 12,
+                femoral: 1,
+                pipe: 1,
+                bottom: 2,
+                butt: 2,
+                knee: 2,
+                longTrouser: 2,
+                calfLeg: 2,
+              },
+            },
+          ],
+        },
+      },
     },
   })
   @ApiQuery({
