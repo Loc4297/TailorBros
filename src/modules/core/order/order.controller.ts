@@ -6,10 +6,12 @@ import {
   UseGuards,
   Get,
   Req,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { OrderService } from './order.service';
-import { CreateOrderDTO, ItemDTO } from './dto/order.dto';
+import { CreateOrderDTO, UpdateOrderDTO } from './dto/order.dto';
 import JwtAuthGuard from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/guard/role.guard';
 import { Roles } from 'src/modules/shared/decorators/role.decorator';
@@ -26,10 +28,11 @@ export class OrderController {
     examples: {
       suit_1: {
         value: {
+          phoneNumber: "0365920514",
           note: 'As soon as possible',
           deadline: '2023-06-27 09:12:46.255',
           items: [
-            {
+            {             
               quantity: 2,
               type: 'SUIT',
               itemInformation: {
@@ -53,6 +56,7 @@ export class OrderController {
       },
       shirt_1: {
         value: {
+          phoneNumber: "0365920515",
           note: 'As soon as possible',
           deadline: '2023-08-27 09:12:46.255',
           items: [
@@ -80,6 +84,7 @@ export class OrderController {
       },
       trouser_1: {
         value: {
+          phoneNumber: "0365920516",
           note: 'As soon as possible',
           deadline: '2023-09-27 09:12:46.255',
           items: [
@@ -102,6 +107,7 @@ export class OrderController {
       },
       trouser_shirt: {
         value: {
+          phoneNumber: "0365920517",
           note: 'As soon as possible',
           deadline: '2023-09-27 09:12:46.255',
           items: [
@@ -138,17 +144,11 @@ export class OrderController {
       },
     },
   })
-  @ApiQuery({
-    required: true,
-    name: 'userId',
-    explode: true,
-    example: null,
-  })
+  
   async createOrder(
     @Body() createOrder: CreateOrderDTO,
-    @Query('userId') userId: string,
   ) {
-    return await this.orderService.createOrder(createOrder, userId);
+    return await this.orderService.createOrder(createOrder);
   }
 
   @ApiBearerAuth()
@@ -173,6 +173,13 @@ export class OrderController {
   @Get('me')
   getDetailOrder(@Req() request) {
     // console.log(request.user.id);
-    return this.orderService.getDetailOrder(request.user.id);
+    return this.orderService.getDetailOrder(request.user.phoneNumber);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Patch(':/id')
+  updateOrder(@Param('id') id: string, @Body() updateOrderDTO: UpdateOrderDTO) {
+    return this.orderService.updateOrder(id, updateOrderDTO)
   }
 }

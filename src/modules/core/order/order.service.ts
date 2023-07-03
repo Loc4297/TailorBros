@@ -1,38 +1,41 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateOrderDTO } from './dto/order.dto';
+import { Injectable } from '@nestjs/common';
+import { CreateOrderDTO, UpdateOrderDTO } from './dto/order.dto';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 @Injectable()
 export class OrderService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createOrder(createOrder: CreateOrderDTO, userId: string) {
-    const { deadline, items, note } = createOrder;
+  async createOrder(createOrder: CreateOrderDTO) {
+    const { deadline, items, note, phoneNumber } = createOrder;
     try {
-      const { id } = await this.prismaService.user.findUnique({
-        where: { id: Number(userId) },
+      const user = await this.prismaService.user.findUnique({
+        where: { phoneNumber: phoneNumber },
       });
-
-      return await this.prismaService.order.create({
-        data: {
-          note,
-          deadline: new Date(deadline),
-          user: { connect: { id } },
-          items: {
-            createMany: {
-              data: items.map((value) => {
-                const { itemInformation, quantity, type } = value;
-                const information: any = itemInformation;
-                return {
-                  itemInformation: information,
-                  quantity,
-                  type,
-                };
-              }),
+      if (user) {
+        return await this.prismaService.order.create({
+          data: {
+            note,
+            deadline: new Date(deadline),
+            user: { connect: { phoneNumber } },
+            items: {
+              createMany: {
+                data: items.map((value) => {
+                  const { itemInformation, quantity, type } = value;
+                  const information: any = itemInformation;
+                  return {
+                    itemInformation: information,
+                    quantity,
+                    type,
+                  };
+                }),
+              },
             },
           },
-        },
-        include: { user: true },
-      });
+          include: { user: true },
+        });
+      } else {
+        return 'Can not found user';
+      }
     } catch (error) {
       console.log('🚀 ~ file: order.service.ts:9 ~ :', error);
     }
@@ -64,24 +67,42 @@ export class OrderService {
     return paginateOrder;
   }
 
-  async getDetailOrder(userId: string) {
+  async getDetailOrder(data: any) {
     try {
       const foundOrder = await this.prismaService.order.findMany({
         where: {
           // Number(userId)
-          userId: Number(userId),
+          phoneNumber: data,
         },
         orderBy: { deadline: 'desc' },
         include: { items: true },
       });
       // console.log(foundOrder);
       return foundOrder;
-      if (!foundOrder) {
-        throw new NotFoundException();
-      }
+      // if (!foundOrder) {
+      //   throw new NotFoundException();
+      // }
     } catch (error) {
       throw error;
     }
+  }
+
+  async updateOrder(id: string, updateOrderDTO: UpdateOrderDTO) {
+    try {
+      // const user = await this.prismaService.order.findUnique({
+      //   where: { id: Number(id) },
+      // });
+      return await this.prismaService.order.update({
+        where: { id: Number(id) },
+        data: { 
+          // items: updateOrderDTO.items,
+          deadline: updateOrderDTO.deadline,
+          note: updateOrderDTO.note,
+          // items: updateOrderDTO.items
+
+         },
+      })
+    } catch (error) {}
   }
 
   async updateOrderStatus() {

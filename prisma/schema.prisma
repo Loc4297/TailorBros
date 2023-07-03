@@ -24,7 +24,8 @@ model User {
 
 model Order {
   id            Int           @id @default(autoincrement())
-  userId        Int
+  // userId        Int
+  phoneNumber   String
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   deadline      DateTime
@@ -32,7 +33,9 @@ model Order {
   orderStatus   OrderStatus   @default(DRAFT)
   paymentStatus PaymentStatus @default(PENDING)
   items         Item[]
-  user          User          @relation(fields: [userId], references: [id])
+  user          User          @relation(fields: [phoneNumber], references: [phoneNumber])
+
+  @@map("orders")
 }
 
 model Item {
@@ -44,11 +47,8 @@ model Item {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   order           Order    @relation(fields: [orderId], references: [id])
-}
 
-enum Chest {
-  T
-  S
+  @@map("items")
 }
 
 enum Role {

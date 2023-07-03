@@ -1,7 +1,4 @@
 -- CreateEnum
-CREATE TYPE "Chest" AS ENUM ('T', 'S');
-
--- CreateEnum
 CREATE TYPE "Role" AS ENUM ('CLIENT', 'TAILOR', 'ADMIN');
 
 -- CreateEnum
@@ -27,9 +24,9 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "Order" (
+CREATE TABLE "orders" (
     "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "phoneNumber" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deadline" TIMESTAMP(3) NOT NULL,
@@ -37,11 +34,11 @@ CREATE TABLE "Order" (
     "orderStatus" "OrderStatus" NOT NULL DEFAULT 'DRAFT',
     "paymentStatus" "PaymentStatus" NOT NULL DEFAULT 'PENDING',
 
-    CONSTRAINT "Order_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Item" (
+CREATE TABLE "items" (
     "id" SERIAL NOT NULL,
     "orderId" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 0,
@@ -50,14 +47,14 @@ CREATE TABLE "Item" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "items_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_phoneNumber_key" ON "users"("phoneNumber");
 
 -- AddForeignKey
-ALTER TABLE "Order" ADD CONSTRAINT "Order_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "orders" ADD CONSTRAINT "orders_phoneNumber_fkey" FOREIGN KEY ("phoneNumber") REFERENCES "users"("phoneNumber") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Item" ADD CONSTRAINT "Item_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "items" ADD CONSTRAINT "items_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
