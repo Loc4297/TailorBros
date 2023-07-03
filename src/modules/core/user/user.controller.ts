@@ -20,11 +20,17 @@ export class UserController {
     explode: true,
     example: null,
   })
+  @ApiQuery({
+    required: false,
+    name: 'limit',
+    explode: true,
+    example: null,
+  })
   @Get()
   async getAllUsers(@Query() query) {
     const data_1 = await JSON.stringify(query);
     const data_2 = await JSON.parse(data_1);
-    return this.userService.getAllUsers(data_2.page);
+    return this.userService.getAllUsers(data_2.page, data_2.limit);
   }
 
   @ApiBearerAuth()

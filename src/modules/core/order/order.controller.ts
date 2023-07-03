@@ -163,12 +163,22 @@ export class OrderController {
     explode: true,
     example: null,
   })
+  @ApiQuery({
+    required: false,
+    name: 'limit',
+    explode: true,
+    example: null,
+  })
   @Get()
   async getAllOrders(@Query() query) {
     console.log(query);
     const data_1 = await JSON.stringify(query);
     const data_2 = await JSON.parse(data_1);
-    return this.orderService.getAllOrders(data_2.phoneNumber, data_2.page);
+    return this.orderService.getAllOrders(
+      data_2.phoneNumber,
+      data_2.page,
+      data_2.limit,
+    );
   }
 
   @ApiBearerAuth()

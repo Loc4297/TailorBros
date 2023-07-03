@@ -37,32 +37,34 @@ export class OrderService {
         return 'Can not found user';
       }
     } catch (error) {
-      console.log('🚀 ~ file: order.service.ts:9 ~ :', error);
+      return error
     }
   }
 
-  async getAllOrders(phoneNumber, page) {
+  async getAllOrders(phoneNumber: string, page: number, limit: number) {
     const allOrders = await this.prismaService.order.findMany({
       where: { user: { phoneNumber: phoneNumber } },
     });
-    // console.log(allUsers.length);
     const paginateOrder = [];
-    for (let i = 0; i < allOrders.length; i += 5) {
-      const a = i;
-      const b = 5;
+    if (!limit) {
+      limit = 15;
+    }
+    let i = 0;
+    for (i; i < allOrders.length; i += Number(limit)) {
       const paginate = await this.prismaService.order.findMany({
-        skip: a,
-        take: b,
+        skip: Number(i),
+        take: Number(limit),
         where: {
           user: {
             phoneNumber: phoneNumber,
           },
         },
+        orderBy: {
+          id: 'asc',
+        },
         include: { items: true },
       });
-      // console.log(paginate);
       paginateOrder.push(paginate);
-      // return paginateUser;
     }
     if (!page) {
       return paginateOrder[0];
@@ -71,31 +73,22 @@ export class OrderService {
     }
   }
 
-  async getDetailOrder(phoneNumber) {
+  async getDetailOrder(phoneNumber: string) {
     try {
       const foundOrder = await this.prismaService.order.findMany({
         where: {
-          // Number(userId)
           phoneNumber: phoneNumber,
         },
-        orderBy: { deadline: 'desc' },
+        orderBy: { deadline: 'asc' },
         include: { items: true },
       });
-      // console.log(foundOrder);
       return foundOrder;
-      // if (!foundOrder) {
-      //   throw new NotFoundException();
-      // }
     } catch (error) {
       throw error;
     }
   }
 
   async updateOrder(id: string, updateOrderDTO: UpdateOrderDTO) {
-    console.log(
-      '🚀 ~ file: order.service.ts:95 ~ OrderService ~ updateOrder ~ updateOrderDTO:',
-      updateOrderDTO,
-    );
     try {
       const updatedOrder = await this.prismaService.order.update({
         where: { id: Number(id) },
@@ -104,11 +97,6 @@ export class OrderService {
           deadline: new Date(updateOrderDTO.deadline),
         },
       });
-      console.log(
-        '🚀 ~ file: order.service.ts:112 ~ OrderService ~ updateOrder ~ updatedOrder:',
-        updatedOrder,
-      );
-      // console.log(updatedOrder);
       return updatedOrder;
     } catch (error) {
       return error;

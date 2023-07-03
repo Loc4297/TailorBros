@@ -5,25 +5,27 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  public async getAllUsers(page) {
+  public async getAllUsers(page: number, limit: number) {
     const allUsers = await this.prismaService.user.findMany();
-    // console.log(allUsers.length);
     const paginateUser = [];
-    for (let i = 0; i < allUsers.length; i += 5) {
-      const a = i;
-      const b = 5;
-      const paginate = await this.prismaService.user.findMany({
-        skip: a,
-        take: b,
+    if (!limit) {
+      limit = 15;
+    }
+    let i = 0;
+    for (i; i < allUsers.length; i += Number(limit)) {
+      const paginate = this.prismaService.user.findMany({
+        skip: Number(i),
+        take: Number(limit),
         where: {
           role: 'CLIENT',
         },
+        select: { id: true, name: true, phoneNumber: true },
+        orderBy: {
+          id: 'asc',
+        },
       });
-      // console.log(paginate);
       paginateUser.push(paginate);
-      // return paginateUser;
     }
-    console.log(page);
     if (!page) {
       return paginateUser[0];
     } else {
