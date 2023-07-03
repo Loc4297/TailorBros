@@ -67,12 +67,12 @@ export class OrderService {
     return paginateOrder;
   }
 
-  async getDetailOrder(data) {
+  async getDetailOrder(phoneNumber) {
     try {
       const foundOrder = await this.prismaService.order.findMany({
         where: {
           // Number(userId)
-          phoneNumber: data,
+          phoneNumber: phoneNumber,
         },
         orderBy: { deadline: 'desc' },
         include: { items: true },
