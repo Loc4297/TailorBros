@@ -1,5 +1,5 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import JwtAuthGuard from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/guard/role.guard';
@@ -14,9 +14,17 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleUser.TAILOR)
+  @ApiQuery({
+    required: false,
+    name: 'page',
+    explode: true,
+    example: null,
+  })
   @Get()
-  getAllUsers() {
-    return this.userService.getAllUsers();
+  async getAllUsers(@Query() query) {
+    const data_1 = await JSON.stringify(query);
+    const data_2 = await JSON.parse(data_1);
+    return this.userService.getAllUsers(data_2.page);
   }
 
   @ApiBearerAuth()

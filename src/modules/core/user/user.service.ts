@@ -5,7 +5,7 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  public async getAllUsers() {
+  public async getAllUsers(page) {
     const allUsers = await this.prismaService.user.findMany();
     // console.log(allUsers.length);
     const paginateUser = [];
@@ -19,11 +19,16 @@ export class UserService {
           role: 'CLIENT',
         },
       });
-      console.log(paginate);
+      // console.log(paginate);
       paginateUser.push(paginate);
       // return paginateUser;
     }
-    return paginateUser;
+    console.log(page);
+    if (!page) {
+      return paginateUser[0];
+    } else {
+      return paginateUser[page];
+    }
   }
 
   // public async getDetailUser(id: number) {

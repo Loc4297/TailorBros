@@ -41,9 +41,9 @@ export class OrderService {
     }
   }
 
-  async getAllOrders(data) {
+  async getAllOrders(phoneNumber, page) {
     const allOrders = await this.prismaService.order.findMany({
-      where: { user: { phoneNumber: data } },
+      where: { user: { phoneNumber: phoneNumber } },
     });
     // console.log(allUsers.length);
     const paginateOrder = [];
@@ -55,7 +55,7 @@ export class OrderService {
         take: b,
         where: {
           user: {
-            phoneNumber: data,
+            phoneNumber: phoneNumber,
           },
         },
         include: { user: true, items: true },
@@ -64,7 +64,11 @@ export class OrderService {
       paginateOrder.push(paginate);
       // return paginateUser;
     }
-    return paginateOrder;
+    if (!page) {
+      return paginateOrder[0];
+    } else {
+      return paginateOrder[page];
+    }
   }
 
   async getDetailOrder(phoneNumber) {
@@ -88,20 +92,27 @@ export class OrderService {
   }
 
   async updateOrder(id: string, updateOrderDTO: UpdateOrderDTO) {
+    console.log(
+      '🚀 ~ file: order.service.ts:95 ~ OrderService ~ updateOrder ~ updateOrderDTO:',
+      updateOrderDTO,
+    );
     try {
-      // const user = await this.prismaService.order.findUnique({
-      //   where: { id: Number(id) },
-      // });
-      return await this.prismaService.order.update({
+      const updatedOrder = await this.prismaService.order.update({
         where: { id: Number(id) },
         data: {
-          // items: updateOrderDTO.items,
-          deadline: updateOrderDTO.deadline,
           note: updateOrderDTO.note,
-          // items: updateOrderDTO.items
+          deadline: new Date(updateOrderDTO.deadline),
         },
       });
-    } catch (error) {}
+      console.log(
+        '🚀 ~ file: order.service.ts:112 ~ OrderService ~ updateOrder ~ updatedOrder:',
+        updatedOrder,
+      );
+      // console.log(updatedOrder);
+      return updatedOrder;
+    } catch (error) {
+      return error;
+    }
   }
 
   async updateOrderStatus() {

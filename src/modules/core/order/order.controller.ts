@@ -157,12 +157,18 @@ export class OrderController {
     explode: true,
     example: null,
   })
+  @ApiQuery({
+    required: false,
+    name: 'page',
+    explode: true,
+    example: null,
+  })
   @Get()
   async getAllOrders(@Query() query) {
     console.log(query);
     const data_1 = await JSON.stringify(query);
     const data_2 = await JSON.parse(data_1);
-    return this.orderService.getAllOrders(data_2.phoneNumber);
+    return this.orderService.getAllOrders(data_2.phoneNumber, data_2.page);
   }
 
   @ApiBearerAuth()
@@ -175,8 +181,22 @@ export class OrderController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @ApiBody({
+    type: UpdateOrderDTO,
+    examples: {
+      update_1: {
+        value: {
+          note: 'Within this week',
+          deadline: '2024-09-27 09:12:46.255',
+        },
+      },
+    },
+  })
   @Patch(':id')
   updateOrder(@Param('id') id: string, @Body() updateOrderDTO: UpdateOrderDTO) {
+    // console.log(id);
+    // console.log(updateOrderDTO);
+
     return this.orderService.updateOrder(id, updateOrderDTO);
   }
 }
