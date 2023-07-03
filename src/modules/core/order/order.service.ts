@@ -58,7 +58,7 @@ export class OrderService {
             phoneNumber: phoneNumber,
           },
         },
-        include: { user: true, items: true },
+        include: { items: true },
       });
       // console.log(paginate);
       paginateOrder.push(paginate);
