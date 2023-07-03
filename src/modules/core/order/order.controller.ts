@@ -28,11 +28,11 @@ export class OrderController {
     examples: {
       suit_1: {
         value: {
-          phoneNumber: "0365920514",
+          phoneNumber: '0365920514',
           note: 'As soon as possible',
           deadline: '2023-06-27 09:12:46.255',
           items: [
-            {             
+            {
               quantity: 2,
               type: 'SUIT',
               itemInformation: {
@@ -56,7 +56,7 @@ export class OrderController {
       },
       shirt_1: {
         value: {
-          phoneNumber: "0365920515",
+          phoneNumber: '0365920515',
           note: 'As soon as possible',
           deadline: '2023-08-27 09:12:46.255',
           items: [
@@ -84,7 +84,7 @@ export class OrderController {
       },
       trouser_1: {
         value: {
-          phoneNumber: "0365920516",
+          phoneNumber: '0365920516',
           note: 'As soon as possible',
           deadline: '2023-09-27 09:12:46.255',
           items: [
@@ -107,7 +107,7 @@ export class OrderController {
       },
       trouser_shirt: {
         value: {
-          phoneNumber: "0365920517",
+          phoneNumber: '0365920517',
           note: 'As soon as possible',
           deadline: '2023-09-27 09:12:46.255',
           items: [
@@ -144,10 +144,7 @@ export class OrderController {
       },
     },
   })
-  
-  async createOrder(
-    @Body() createOrder: CreateOrderDTO,
-  ) {
+  async createOrder(@Body() createOrder: CreateOrderDTO) {
     return await this.orderService.createOrder(createOrder);
   }
 
@@ -178,8 +175,8 @@ export class OrderController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Patch(':/id')
+  @Patch(':id')
   updateOrder(@Param('id') id: string, @Body() updateOrderDTO: UpdateOrderDTO) {
-    return this.orderService.updateOrder(id, updateOrderDTO)
+    return this.orderService.updateOrder(id, updateOrderDTO);
   }
 }
