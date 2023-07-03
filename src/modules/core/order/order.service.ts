@@ -67,7 +67,7 @@ export class OrderService {
     return paginateOrder;
   }
 
-  async getDetailOrder(data: any) {
+  async getDetailOrder(data) {
     try {
       const foundOrder = await this.prismaService.order.findMany({
         where: {
@@ -94,14 +94,13 @@ export class OrderService {
       // });
       return await this.prismaService.order.update({
         where: { id: Number(id) },
-        data: { 
+        data: {
           // items: updateOrderDTO.items,
           deadline: updateOrderDTO.deadline,
           note: updateOrderDTO.note,
           // items: updateOrderDTO.items
-
-         },
-      })
+        },
+      });
     } catch (error) {}
   }
 
