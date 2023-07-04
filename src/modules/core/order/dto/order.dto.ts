@@ -1,4 +1,5 @@
 import {
+  IsDateString,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
@@ -6,6 +7,8 @@ import {
 } from '@nestjs/class-validator';
 import { ItemType } from '@prisma/client';
 import { SuitInformation, TrouserInformation } from '../models/order.model';
+import { MinLength } from 'class-validator';
+import { Transform } from '@nestjs/class-transformer';
 
 export class CreateOrderDTO {
   @IsPhoneNumber('VN')
@@ -13,12 +16,19 @@ export class CreateOrderDTO {
   phoneNumber: string;
 
   @IsNotEmpty()
+  // @MinLength(1, {
+  //   each: true,
+  // })
   items: ItemDTO[];
 
   @IsOptional()
   note: string;
 
   @IsNotEmpty()
+  @IsDateString()
+  @Transform(({ value }) => {
+    return new Date(value);
+  })
   deadline: Date;
 }
 

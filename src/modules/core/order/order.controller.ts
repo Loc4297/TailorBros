@@ -8,6 +8,7 @@ import {
   Req,
   Patch,
   Param,
+  HttpStatus,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { OrderService } from './order.service';
@@ -16,11 +17,16 @@ import JwtAuthGuard from '../auth/guard/jwt-auth.guard';
 import { RolesGuard } from '../auth/guard/role.guard';
 import { Roles } from 'src/modules/shared/decorators/role.decorator';
 import { RoleUser } from '../auth/dto/auth.dto';
+import { INTERNAL_SERVER_ERROR } from 'src/modules/shared/constants/error';
+import { OrderValidate } from './validate/order.validate';
 
 @Controller('order')
 @ApiTags('Order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(
+    private readonly orderService: OrderService,
+    private readonly orderValidate: OrderValidate,
+  ) {}
 
   @Post('create-orders')
   @ApiBody({
@@ -126,17 +132,22 @@ export class OrderController {
               },
             },
             {
-              quantity: 4,
-              type: 'TROUSER',
+              quantity: 5,
+              type: 'SHIRT',
               itemInformation: {
-                belly: 12,
-                femoral: 1,
-                pipe: 1,
-                bottom: 2,
+                shoulder: 12,
+                longShirt: 1,
+                calfArm: 1,
+                neck: 2,
+                gile: 2,
+                chestType: 'S',
+                downShoulder: 2,
+                longArm: 2,
+                withinArmpit: 2,
+                chest: 2,
                 butt: 2,
-                knee: 2,
-                longTrouser: 2,
-                calfLeg: 2,
+                handDoor: 2,
+                lowerWaist: 2,
               },
             },
           ],
@@ -145,7 +156,16 @@ export class OrderController {
     },
   })
   async createOrder(@Body() createOrder: CreateOrderDTO) {
-    return await this.orderService.createOrder(createOrder);
+    try {
+      const check = await this.orderValidate.validateBeforeOrder(createOrder);
+      if (!check.status) {
+        return { ...check, statusCode: HttpStatus.BAD_REQUEST };
+      }
+      return await this.orderService.createOrder(createOrder);
+    } catch (error) {
+      console.log('🚀 ~ file: order.controller.ts:152 ~ :', error);
+      throw error;
+    }
   }
 
   @ApiBearerAuth()

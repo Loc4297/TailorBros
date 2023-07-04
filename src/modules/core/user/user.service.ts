@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 
 @Injectable()
@@ -33,17 +33,27 @@ export class UserService {
     }
   }
 
-  // public async getDetailUser(id: number) {
-  //   try {
-  //     const foundUser = await this.prismaService.user.findUnique({
-  //       where: { id },
-  //     });
-  //     if (!foundUser) {
-  //       throw new NotFoundException();
-  //     }
-  //     return foundUser;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  public async getDetailUser(phoneNumber: string) {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { phoneNumber },
+        select: { name: true, phoneNumber: true },
+      });
+
+      const orderUser = await this.prismaService.order.findFirst({
+        where: { phoneNumber: phoneNumber },
+        orderBy: { createdAt: 'desc' },
+        include: { items: true },
+      });
+      console.log(
+        '🚀 ~ file: user.service.ts:48 ~ UserService ~ getDetailUser ~ orderUser:',
+        orderUser,
+      );
+      if (!orderUser) return user;
+      const userInformation = orderUser.items;
+      return Object.assign(user, userInformation);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

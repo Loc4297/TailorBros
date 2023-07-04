@@ -4,10 +4,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
+import { OrderValidate } from './validate/order.validate';
 
 @Module({
   imports: [],
-  providers: [OrderService],
+  providers: [OrderService, OrderValidate],
   controllers: [OrderController],
 })
 export class OrderModule {}

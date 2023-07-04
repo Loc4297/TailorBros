@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDTO, UpdateOrderDTO } from './dto/order.dto';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { INTERNAL_SERVER_ERROR } from 'src/modules/shared/constants/error';
 @Injectable()
 export class OrderService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -31,13 +32,17 @@ export class OrderService {
               },
             },
           },
-          include: { user: true },
+          include: { items: true },
         });
       } else {
         return 'Can not found user';
       }
     } catch (error) {
-      return error
+      console.log(
+        '🚀 ~ file: order.service.ts:40 ~ OrderService ~ createOrder ~ error:',
+        error,
+      );
+      throw INTERNAL_SERVER_ERROR;
     }
   }
 
@@ -79,7 +84,7 @@ export class OrderService {
         where: {
           phoneNumber: phoneNumber,
         },
-        orderBy: { deadline: 'asc' },
+        orderBy: { createdAt: 'asc' },
         include: { items: true },
       });
       return foundOrder;

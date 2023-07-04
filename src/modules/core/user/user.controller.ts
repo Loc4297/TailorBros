@@ -39,6 +39,7 @@ export class UserController {
   //   @Roles(RoleUser.CLIENT)
   @Get('me')
   getDetailUser(@Req() request) {
-    return request.user;
+    // return request.user;
+    return this.userService.getDetailUser(request.user.phoneNumber);
   }
 }

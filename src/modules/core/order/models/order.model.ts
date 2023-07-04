@@ -27,8 +27,7 @@ export class SuitInformation {
   gile: number;
 
   @IsNotEmpty()
-  @IsEnum(Chest)
-  chestType: Chest;
+  chestType: string;
 
   @IsNotEmpty()
   @IsNumber()
@@ -58,6 +57,24 @@ export class SuitInformation {
   @IsNumber()
   lowerWaist: number;
 }
+
+export const keysOfSuitInformation: (keyof SuitInformation)[] = [
+  'butt',
+  'calfArm',
+  'chest',
+  'downShoulder',
+  'gile',
+  'handDoor',
+  'longArm',
+  'longShirt',
+  'lowerWaist',
+  'neck',
+  'shoulder',
+  'withinArmpit',
+  'chestType',
+];
+
+export type keysOfSuitInformation = keyof SuitInformation;
 
 export class TrouserInformation {
   @IsNotEmpty()
@@ -92,3 +109,16 @@ export class TrouserInformation {
   @IsNumber()
   calfLeg: number;
 }
+
+export const keysOfTrouserInformation: (keyof TrouserInformation)[] = [
+  'butt',
+  'belly',
+  'bottom',
+  'calfLeg',
+  'femoral',
+  'knee',
+  'longTrouser',
+  'pipe',
+];
+
+export type keysOfTrouserInformation = keyof TrouserInformation;
