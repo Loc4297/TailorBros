@@ -37,7 +37,7 @@ export class UserService {
     try {
       const user = await this.prismaService.user.findUnique({
         where: { phoneNumber },
-        select: { name: true, phoneNumber: true },
+        select: { name: true, phoneNumber: true, role: true },
       });
 
       const orderUser = await this.prismaService.order.findFirst({
