@@ -8,9 +8,19 @@ import {
   Req,
   Patch,
   Param,
+  UploadedFile,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+
+import { UseInterceptors } from '@nestjs/common';
+
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { CreateOrderDTO, UpdateOrderDTO } from './dto/order.dto';
 import JwtAuthGuard from '../auth/guard/jwt-auth.guard';
@@ -19,6 +29,27 @@ import { Roles } from 'src/modules/shared/decorators/role.decorator';
 import { RoleUser } from '../auth/dto/auth.dto';
 import { INTERNAL_SERVER_ERROR } from 'src/modules/shared/constants/error';
 import { OrderValidate } from './validate/order.validate';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiFile } from 'src/modules/shared/decorators/file.decorator';
+import { diskStorage } from 'multer';
+import * as fs from 'fs';
+
+export const DiskStorage = {
+  limits: {
+    fileSize: 10240000,
+  },
+  storage: diskStorage({
+    destination: (req, file, cb) => {
+      fs.mkdirSync(`./public/ghghjgy`, {
+        recursive: true,
+      });
+      cb(null, `./public/ghghjgy`);
+    },
+    filename: (req, files, cb) => {
+      cb(null, files.originalname);
+    },
+  }),
+};
 
 @Controller('order')
 @ApiTags('Order')
@@ -27,6 +58,21 @@ export class OrderController {
     private readonly orderService: OrderService,
     private readonly orderValidate: OrderValidate,
   ) {}
+
+  @Post('import-orders')
+  @ApiConsumes('multipart/form-data')
+  @ApiFile('file')
+  @UseInterceptors(FileInterceptor('file'))
+  async importOrder(@UploadedFile() image: Express.Multer.File) {
+    const path = `./public/excel_${new Date().getTime()}.xlsx`;
+    fs.createWriteStream(path).write(image.buffer);
+    try {
+      return await this.orderService.importOrder(path);
+    } catch (error) {
+      console.log('🚀 ~ file: order.controller.ts:152 ~ :', error);
+      throw error;
+    }
+  }
 
   @Post('create-orders')
   @ApiBody({
