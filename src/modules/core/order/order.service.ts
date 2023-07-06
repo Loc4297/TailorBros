@@ -128,119 +128,107 @@ export class OrderService {
   async importOrder(file: Buffer) {
     try {
       await readXlsxFile(Buffer.from(file)).then((rows) => {
-        try {
-          rows.forEach(async (value: any[], index) => {
-            if (index < 1) return 'Please fill your data';
-            const items: ItemDTO[] = [];
-
-            if (value[2])
-              items.push({
-                quantity: value[2],
-                type: ItemType.SUIT,
-                itemInformation: {
-                  butt: value[3],
-                  calfArm: value[4],
-                  chest: value[5],
-                  downShoulder: value[6],
-                  gile: value[7],
-                  handDoor: value[8],
-                  longArm: value[9],
-                  longShirt: value[10],
-                  lowerWaist: value[11],
-                  neck: value[12],
-                  shoulder: value[13],
-                  withinArmpit: value[14],
-                  chestType: value[15],
-                },
-              });
-            if (value[17])
-              items.push({
-                quantity: value[17],
-                type: ItemType.SHIRT,
-                itemInformation: {
-                  butt: value[18],
-                  calfArm: value[19],
-                  chest: value[20],
-                  downShoulder: value[21],
-                  gile: value[22],
-                  handDoor: value[23],
-                  longArm: value[24],
-                  longShirt: value[25],
-                  lowerWaist: value[26],
-                  neck: value[27],
-                  shoulder: value[28],
-                  withinArmpit: value[29],
-                  chestType: value[30],
-                },
-              });
-            if (value[32])
-              items.push({
-                quantity: value[32],
-                type: ItemType.TROUSER,
-                itemInformation: {
-                  butt: value[33],
-                  belly: value[34],
-                  bottom: value[35],
-                  calfLeg: value[36],
-                  femoral: value[37],
-                  knee: value[38],
-                  longTrouser: value[39],
-                  pipe: value[40],
-                },
-              });
-
-            const data: CreateOrderDTO = {
-              phoneNumber: value[0],
-              note: value[41],
-              items,
-              deadline: new Date(value[42]),
-            };
-            try {
-              const check = await this.orderValidate.validateBeforeOrder(data);
-              if (!check.status) {
-                return { ...check, statusCode: HttpStatus.BAD_REQUEST };
-              }
-              const user = await this.prismaService.user.findUnique({
-                where: { phoneNumber: data.phoneNumber },
-              });
-              if (user) {
-                const createOrderByExcel =
-                  await this.prismaService.order.create({
-                    data: {
-                      note: data.note,
-                      deadline: new Date(data.deadline),
-                      user: {
-                        connect: { phoneNumber: data.phoneNumber },
-                      },
-                      items: {
-                        createMany: {
-                          data: data.items.map((value) => {
-                            const { itemInformation, quantity, type } = value;
-                            const information: any = itemInformation;
-                            return {
-                              itemInformation: information,
-                              quantity,
-                              type,
-                            };
-                          }),
-                        },
-                      },
-                    },
-                    include: { items: true },
-                  });
-                return createOrderByExcel;
-              } else {
-                return 'Can not found user';
-              }
-            } catch (error) {
-              return error;
-            }
+        rows.forEach(async (value: any[], index) => {
+          if (index < 1) return 'Please fill your data';
+          const items: ItemDTO[] = [];
+          if (value[2])
+            items.push({
+              quantity: value[2],
+              type: ItemType.SUIT,
+              itemInformation: {
+                butt: value[3],
+                calfArm: value[4],
+                chest: value[5],
+                downShoulder: value[6],
+                gile: value[7],
+                handDoor: value[8],
+                longArm: value[9],
+                longShirt: value[10],
+                lowerWaist: value[11],
+                neck: value[12],
+                shoulder: value[13],
+                withinArmpit: value[14],
+                chestType: value[15],
+              },
+            });
+          if (value[17])
+            items.push({
+              quantity: value[17],
+              type: ItemType.SHIRT,
+              itemInformation: {
+                butt: value[18],
+                calfArm: value[19],
+                chest: value[20],
+                downShoulder: value[21],
+                gile: value[22],
+                handDoor: value[23],
+                longArm: value[24],
+                longShirt: value[25],
+                lowerWaist: value[26],
+                neck: value[27],
+                shoulder: value[28],
+                withinArmpit: value[29],
+                chestType: value[30],
+              },
+            });
+          if (value[32])
+            items.push({
+              quantity: value[32],
+              type: ItemType.TROUSER,
+              itemInformation: {
+                butt: value[33],
+                belly: value[34],
+                bottom: value[35],
+                calfLeg: value[36],
+                femoral: value[37],
+                knee: value[38],
+                longTrouser: value[39],
+                pipe: value[40],
+              },
+            });
+          const data: CreateOrderDTO = {
+            phoneNumber: value[0],
+            note: value[41],
+            items,
+            deadline: new Date(value[42]),
+          };
+          const check = await this.orderValidate.validateBeforeOrder(data);
+          if (!check.status) {
+            return { ...check, statusCode: HttpStatus.BAD_REQUEST };
+          }
+          const user = await this.prismaService.user.findUnique({
+            where: { phoneNumber: data.phoneNumber },
           });
-        } catch (error) {
-          return error;
-        }
+          if (user) {
+            const createOrderByExcel = await this.prismaService.order.create({
+              data: {
+                note: data.note,
+                deadline: new Date(data.deadline),
+                user: {
+                  connect: { phoneNumber: data.phoneNumber },
+                },
+                items: {
+                  createMany: {
+                    data: data.items.map((value) => {
+                      const { itemInformation, quantity, type } = value;
+                      const information: any = itemInformation;
+                      return {
+                        itemInformation: information,
+                        quantity,
+                        type,
+                      };
+                    }),
+                  },
+                },
+              },
+              include: { items: true },
+            });
+            return createOrderByExcel;
+          } else {
+            return 'Can not found user';
+          }
+        });
       });
-      return;
     } catch (error) {
       return error;
     }
