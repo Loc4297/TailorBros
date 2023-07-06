@@ -24,7 +24,7 @@ export class CreateOrderDTO {
   @IsOptional()
   note: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
   @Transform(({ value }) => {
     return new Date(value);

@@ -64,10 +64,8 @@ export class OrderController {
   @ApiFile('file')
   @UseInterceptors(FileInterceptor('file'))
   async importOrder(@UploadedFile() image: Express.Multer.File) {
-    const path = `./public/excel_${new Date().getTime()}.xlsx`;
-    fs.createWriteStream(path).write(image.buffer);
     try {
-      return await this.orderService.importOrder(path);
+      return await this.orderService.importOrder(image.buffer);
     } catch (error) {
       console.log('🚀 ~ file: order.controller.ts:152 ~ :', error);
       throw error;
