@@ -10,6 +10,7 @@ import {
   Param,
   UploadedFile,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 
 import { UseInterceptors } from '@nestjs/common';
@@ -59,6 +60,9 @@ export class OrderController {
     private readonly orderValidate: OrderValidate,
   ) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleUser.TAILOR)
   @Post('import-orders')
   @ApiConsumes('multipart/form-data')
   @ApiFile('file')
@@ -72,6 +76,9 @@ export class OrderController {
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleUser.TAILOR)
   @Post('create-orders')
   @ApiBody({
     type: CreateOrderDTO,

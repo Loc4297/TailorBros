@@ -124,10 +124,6 @@ export class OrderService {
 
   async importOrder(file: Buffer) {
     readXlsxFile(Buffer.from(file)).then((rows) => {
-      // console.log(
-      //   '🚀 ~ file: order.service.ts:130 ~ OrderService ~ ).then ~ rows:',
-      //   rows,
-      // );
       const keys = rows[0];
       const arrData = [];
       rows.forEach(async (value: any[], index) => {
@@ -202,26 +198,13 @@ export class OrderService {
           deadline: value[42],
         };
         arrData.push(data);
-        console.log(
-          '🚀 ~ file: order.service.ts:205 ~ OrderService ~ rows.forEach ~ arrData:',
-          arrData,
-        );
-
         let i = 0;
         for (i; i < arrData.length; i++) {
-          console.log(
-            '🚀 ~ file: order.service.ts:208 ~ OrderService ~ readXlsxFile ~ arrData:',
-            arrData[i],
-          );
           const user = await this.prismaService.user.findUnique({
             where: { phoneNumber: arrData[i].phoneNumber },
           });
-          console.log(
-            '🚀 ~ file: order.service.ts:219 ~ OrderService ~ rows.forEach ~ user:',
-            user,
-          );
           if (user) {
-            return this.prismaService.order.create({
+            return await this.prismaService.order.create({
               data: {
                 note: arrData[i].note,
                 deadline: new Date(arrData[i].deadline),
