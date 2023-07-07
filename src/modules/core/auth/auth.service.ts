@@ -20,6 +20,7 @@ export class AuthService {
         data: {
           name: data.name,
           phoneNumber: data.phoneNumber,
+          national: data.national,
           password: hashedPassword,
           role: data.role,
         },
@@ -43,12 +44,14 @@ export class AuthService {
         data: {
           name: registrationData.name,
           phoneNumber: registrationData.phoneNumber,
+          national: registrationData.national,
           password: hashedPassword,
         },
         select: {
           id: true,
           name: true,
           phoneNumber: true,
+          national: true,
         },
       });
       return user;

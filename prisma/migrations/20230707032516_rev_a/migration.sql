@@ -15,6 +15,7 @@ CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "phoneNumber" TEXT NOT NULL,
+    "national" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" "Role" DEFAULT 'CLIENT',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/class-validator';
 import { Role } from '@prisma/client';
 import { IsPhoneNumber } from 'class-validator';
+import { CountryCode } from 'libphonenumber-js';
 
 export enum RoleUser {
   CLIENT = 'CLIENT',
@@ -19,8 +20,12 @@ export class TailorDTO {
 
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber('VN')
+  // @IsPhoneNumber()
   phoneNumber: '0361234567';
+
+  @IsNotEmpty()
+  @IsString()
+  national: CountryCode;
 
   @IsNotEmpty()
   @IsString()
@@ -37,8 +42,12 @@ export class RegisterDTO {
 
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber('VN')
+  // @IsPhoneNumber()
   phoneNumber: string;
+
+  @IsNotEmpty()
+  @IsString()
+  national: CountryCode;
 
   @IsNotEmpty()
   @IsString()
@@ -52,7 +61,6 @@ export class RegisterDTO {
 export class LogInDTO {
   @IsNotEmpty()
   @IsString()
-  @IsPhoneNumber('VN')
   phoneNumber: string;
 
   @IsNotEmpty()

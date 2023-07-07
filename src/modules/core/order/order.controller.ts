@@ -10,7 +10,6 @@ import {
   Param,
   UploadedFile,
   HttpStatus,
-  Res,
 } from '@nestjs/common';
 
 import { UseInterceptors } from '@nestjs/common';

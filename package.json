@@ -38,6 +38,7 @@
     "argon2": "^0.30.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "libphonenumber-js": "^1.10.37",
     "passport-jwt": "^4.0.1",
     "pg": "^8.11.1",
     "read-excel-file": "^5.6.1",
